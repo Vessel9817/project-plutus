@@ -5,6 +5,7 @@ on:
   pull_request:
 
 jobs:
+  # Runs a Python type-checker
   mypy:
     permissions:
       contents: read
@@ -21,6 +22,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
-        run: pip install -r ./requirements-freeze.txt
+        run: pip install --group publish --group typing .
       - name: Run mypy
         run: ${{ startsWith(matrix.os, 'windows') && 'python' || 'python3' }} -m mypy .
