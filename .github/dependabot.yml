@@ -5,11 +5,15 @@
 
 version: 2
 updates:
-  - package-ecosystem: "pip"
-    directory: "/"
+  - package-ecosystem: pip
+    directory: /
     schedule:
-      interval: "daily" # weekdays
-  - package-ecosystem: "github-actions"
-    directory: "/"
+      interval: cron
+      cronjob: 0 0 * * * # Daily
+      timezone: UTC
+  - package-ecosystem: github-actions
+    directory: /
     schedule:
-      interval: "daily"
+      interval: cron
+      cronjob: 0 0 * * * # Daily
+      timezone: UTC
