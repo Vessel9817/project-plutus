@@ -30,7 +30,8 @@ class AuctionHelpers:
         A wrapper function for `channel.send`.
         If the channel doesn't support messaging, this is a no-op.
         '''
-        pass
+        if isinstance(channel, discord.abc.MessageableChannel):
+            await channel.send(*args, **kwargs)
 
     def _is_in_guild_context(self, ctx: commands.Context[commands.Bot]) -> bool:
         """Check if the command is invoked in a guild (server) context."""
