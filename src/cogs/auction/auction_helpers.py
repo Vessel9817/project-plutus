@@ -17,7 +17,8 @@ class AuctionHelpers:
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
         self.auctions: dict[tuple[int, int], AuctionData] = {}
-        self.auction_timers: dict[Any, asyncio.Task[None]] = {}  # Dictionary to keep track of auction tasks
+        # Dictionary to keep track of auction tasks
+        self.auction_timers: dict[Any, asyncio.Task[None]] = {}
         self.next_auction_id = 1
 
     async def _send_message(
@@ -43,7 +44,10 @@ class AuctionHelpers:
         # self.auctions: dict[int, dict[int, AuctionData]]
         return [k[0] for k in self.auctions.keys()].count(guild_id) >= self.MAX_AUCTIONS_PER_GUILD
 
-    def _get_auction(self, ctx: commands.Context[commands.Bot]) -> Optional[AuctionData]:
+    def _get_auction(
+        self,
+        ctx: commands.Context[commands.Bot]
+    ) -> Optional[AuctionData]:
         """Retrieve an auction by its channel within a specific guild."""
         auction_key = self._get_auction_key(ctx)
         return self.auctions.get(auction_key)

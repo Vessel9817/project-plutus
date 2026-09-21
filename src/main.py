@@ -16,7 +16,11 @@ if len(TOKEN) < 1:
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('discord_bot')
 logger.setLevel(logging.INFO)
-handler = logging.FileHandler(filename='discord_bot.log', encoding='utf-8', mode='w')
+handler = logging.FileHandler(
+    filename='discord_bot.log',
+    encoding='utf-8',
+    mode='w'
+)
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 

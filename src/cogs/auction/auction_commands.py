@@ -79,7 +79,11 @@ class AuctionCommands(AuctionHelpers, commands.Context[commands.Bot]):
         aliases=["placebid", "b"],
         help="Places a bid on the active auction with the given bid amount.",
     )
-    async def place_bid(self, ctx: commands.Context[commands.Bot], bid_amount_str: str) -> None:
+    async def place_bid(
+        self,
+        ctx: commands.Context[commands.Bot],
+        bid_amount_str: str
+    ) -> None:
         """Places a bid on an active auction with the given auction ID and bid amount."""
         logger.info(f"{ctx.author} attempted to bid with {bid_amount_str}")
 
@@ -167,7 +171,10 @@ class AuctionCommands(AuctionHelpers, commands.Context[commands.Bot]):
         aliases=["ca", "endauction", "close", "end"],
         help="Closes the auction with the given auction ID.",
     )
-    async def manual_close_auction(self, ctx: commands.Context[commands.Bot]) -> None:
+    async def manual_close_auction(
+        self,
+        ctx: commands.Context[commands.Bot]
+    ) -> None:
         """Allows server staff to manually close an auction before its set duration ends."""
         logger.info(f"{ctx.author} invoked the manual_close_auction command")
 
@@ -210,7 +217,10 @@ class AuctionCommands(AuctionHelpers, commands.Context[commands.Bot]):
         ],
         help="Lists all ongoing auctions in the server.",
     )
-    async def check_ongoing_auctions(self, ctx: commands.Context[commands.Bot]) -> None:
+    async def check_ongoing_auctions(
+        self,
+        ctx: commands.Context[commands.Bot]
+    ) -> None:
         """Lists all ongoing auctions in the server."""
         if not self._is_in_guild_context(ctx):
             await self._send_error_message(
