@@ -32,25 +32,21 @@ To deploy the Project Plutus Discord bot, follow these steps:
    - Under "Scopes", select "bot".
    - In the "Bot Permissions" section, select the permissions your bot will need.
    - Copy the generated URL and open it in your browser to invite the bot
-    to your server.
+     to your server.
 
 3. **Set up the bot environment**:
    - Ensure you have Python installed on your system. (Tested on Python 3.10)
    - Install the required Python packages with `pip install .`.
-   - Create a `.env` file in the root directory and add your Discord bot
-    token like so:
-
-     ```env
-     DISCORD_TOKEN=your_bot_token_here
-     ```
+   - In the root directory, copy the `.env.example` file, name the copy `.env`
+     and replace the placeholder inside with your Discord bot token.
 
 4. **Running the bot**:
-   - Run the bot with `py src/main.py` from the command line.
+   - Run the bot with `py -m src.main` from the command line.
 
 5. **Verify bot status**:
    - After running the bot, it should appear online in your Discord server.
    - Test the bot's functionality with the `$help` command to ensure
-    it's working properly.
+     it's working properly.
 
 ## Usage
 
