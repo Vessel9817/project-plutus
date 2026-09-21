@@ -9,10 +9,13 @@ where = ["src"]
 name = "project_plutus"
 version = "0.0.0"
 readme = "README.md"
-requires-python = ">=3.10,<3.11"
+# discord.py doesn't support Python 3.13 yet
+requires-python = ">=3.10,<3.13"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Operating System :: OS Independent",
 ]
 license-files = ["LICEN[CS]E*", "*.license"]
