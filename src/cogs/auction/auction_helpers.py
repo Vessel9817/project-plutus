@@ -1,9 +1,7 @@
-# cogs/auction/auction_helpers.py
-
 import discord
 from discord.ext import commands
-from utils.auction_data import AuctionData
-from utils.utilities import format_time_remaining
+from ...utils.auction_data import AuctionData
+from ...utils.utilities import Channel, format_time_remaining, get_guild
 from datetime import datetime, timedelta
 from typing import Any, cast, Optional, Tuple
 import logging
@@ -21,6 +19,18 @@ class AuctionHelpers:
         self.auctions: dict[tuple[int, int], AuctionData] = {}
         self.auction_timers: dict[Any, asyncio.Task[None]] = {}  # Dictionary to keep track of auction tasks
         self.next_auction_id = 1
+
+    async def _send_message(
+        self,
+        channel: Channel,
+        *args: Any,
+        **kwargs: Any
+    ) -> Optional[discord.Message]:
+        '''
+        A wrapper function for `channel.send`.
+        If the channel doesn't support messaging, this is a no-op.
+        '''
+        pass
 
     def _is_in_guild_context(self, ctx: commands.Context[commands.Bot]) -> bool:
         """Check if the command is invoked in a guild (server) context."""
@@ -81,7 +91,7 @@ class AuctionHelpers:
                 title=f"Auction Ended: {item}", description=announcement, color=color
             )
             embed.set_footer(text=f"Auction ID: {auction_id}")
-            await channel.send(embed=embed)
+            await self._send_message(channel, embed=embed)
         else:
             logger.error(f"Channel {channel_id} not found for auction announcement.")
 
@@ -119,7 +129,7 @@ class AuctionHelpers:
         ctx: commands.Context[commands.Bot]
     ) -> tuple[int, int]:
         """Generate a key for the auctions dictionary based on the guild and channel."""
-        return (ctx.guild.id, ctx.channel.id)
+        return (get_guild(ctx).id, ctx.channel.id)
 
     def _is_auction_active(self, ctx: commands.Context[commands.Bot]) -> bool:
         """Check if there is an active auction in the current channel."""
@@ -284,7 +294,7 @@ class AuctionHelpers:
                 ctx, "This command can only be used in a server."
             )
             return False
-        if self._has_max_auctions(ctx.guild.id):
+        if self._has_max_auctions(get_guild(ctx).id):
             await self._send_error_message(
                 ctx,
                 "The maximum number of concurrent auctions for this server has been reached.",
@@ -326,7 +336,7 @@ class AuctionHelpers:
             min_increment=min_increment,
             end_time=end_time,
             channel_id=ctx.channel.id,
-            guild_id=ctx.guild.id,
+            guild_id=get_guild(ctx).id,
             creator_name=ctx.author.display_name,
             creator_id=ctx.author.id,
         )
@@ -374,7 +384,10 @@ class AuctionHelpers:
     ) -> bool:
         if (
             ctx.author.id != auction.creator_id
-            and not ctx.author.guild_permissions.manage_channels
+            and not (
+                isinstance(ctx.author, discord.User) # ctx.author is either a User or Member
+                or ctx.author.guild_permissions.manage_channels
+            )
         ):
             await self._send_error_message(
                 ctx, "You do not have permission to close this auction."

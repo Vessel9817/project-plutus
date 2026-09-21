@@ -1,7 +1,6 @@
-# cogs/auction/auction_commands.py
 import discord
 from discord.ext import commands
-from utils.utilities import parse_duration
+from ...utils.utilities import get_guild, parse_duration
 from .auction_helpers import AuctionData, AuctionHelpers
 import logging
 import asyncio
@@ -12,18 +11,18 @@ from typing import Awaitable, Callable, cast
 logger = logging.getLogger("discord_bot")
 
 
-class AuctionCommands(AuctionHelpers):
+class AuctionCommands(AuctionHelpers, commands.Context[commands.Bot]):
     BID_EMOJI_TOGGLE = True  # Toggle to enable/disable bid emoji reactions
     MIN_BID_TIME = 3 * 60  # Minimum time between bids in seconds
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: commands.Bot) -> None:
         super().__init__(bot)
 
     @commands.command(
         name="startauction",
         aliases=["sa", "beginauction", "start"],
         help="Starts an auction with the given item, starting bid, minimum increment, and duration.",
-    ) # pyright: ignore # Command struggles with self in the method declaration
+    )
     async def start_auction(
         self,
         ctx: commands.Context[commands.Bot],
@@ -66,11 +65,12 @@ class AuctionCommands(AuctionHelpers):
         new_auction.message_id = auction_message.id
 
         self._set_auction(ctx, new_auction)
+        guild = get_guild(ctx)
         logger.info(
-            f"Auction started for {item} in guild {ctx.guild.name} (ID: {ctx.guild.id})"
+            f"Auction started for {item} in guild {guild.name} (ID: {guild.id})"
         )
 
-        self.bot.loop.create_task(self.close_auction(ctx, auction_id, ctx.guild.id))
+        self.bot.loop.create_task(self.close_auction(ctx, auction_id, guild.id))
         auction_timer = asyncio.create_task(self.run_timer(ctx, new_auction))
         self.auction_timers[new_auction.id] = auction_timer
 
@@ -78,7 +78,7 @@ class AuctionCommands(AuctionHelpers):
         name="bid",
         aliases=["placebid", "b"],
         help="Places a bid on the active auction with the given bid amount.",
-    ) # pyright: ignore # Command struggles with self in the method declaration
+    )
     async def place_bid(self, ctx: commands.Context[commands.Bot], bid_amount_str: str) -> None:
         """Places a bid on an active auction with the given auction ID and bid amount."""
         logger.info(f"{ctx.author} attempted to bid with {bid_amount_str}")
@@ -166,7 +166,7 @@ class AuctionCommands(AuctionHelpers):
         name="closeauction",
         aliases=["ca", "endauction", "close", "end"],
         help="Closes the auction with the given auction ID.",
-    ) # pyright: ignore # Command struggles with self in the method declaration
+    )
     async def manual_close_auction(self, ctx: commands.Context[commands.Bot]) -> None:
         """Allows server staff to manually close an auction before its set duration ends."""
         logger.info(f"{ctx.author} invoked the manual_close_auction command")
@@ -184,7 +184,7 @@ class AuctionCommands(AuctionHelpers):
         if not await self._validate_close_auction_permissions(ctx, auction):
             return
 
-        await self.close_auction(ctx, auction.id, ctx.guild.id, manual=True)
+        await self.close_auction(ctx, auction.id, get_guild(ctx).id, manual=True)
         closed_by = ctx.author.display_name
 
         await ctx.send(
@@ -209,7 +209,7 @@ class AuctionCommands(AuctionHelpers):
             "oa",
         ],
         help="Lists all ongoing auctions in the server.",
-    ) # pyright: ignore # Command struggles with self in the method declaration
+    )
     async def check_ongoing_auctions(self, ctx: commands.Context[commands.Bot]) -> None:
         """Lists all ongoing auctions in the server."""
         if not self._is_in_guild_context(ctx):
@@ -218,7 +218,7 @@ class AuctionCommands(AuctionHelpers):
             )
             return
 
-        ongoing_auctions = self._get_ongoing_auctions(ctx.guild.id)
+        ongoing_auctions = self._get_ongoing_auctions(get_guild(ctx).id)
         if not ongoing_auctions:
             await self._send_error_message(
                 ctx, "There are no ongoing auctions in this server."

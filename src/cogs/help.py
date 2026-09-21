@@ -1,4 +1,3 @@
-# cogs/help.py
 import discord
 from discord.ext import commands
 import logging
@@ -58,6 +57,6 @@ class CustomHelp(commands.HelpCommand):
 
 
 async def setup(bot: commands.Bot):
-    command_prefix = cast(str, bot.command_prefix)
+    command_prefix = cast(str, bot.command_prefix) # type: ignore
     bot.help_command = CustomHelp(command_prefix)
     logger.info("Help cog loaded")

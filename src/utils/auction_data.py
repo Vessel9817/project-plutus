@@ -1,4 +1,3 @@
-# utils/auction_data.py
 from datetime import datetime
 from typing import Optional
 
@@ -15,7 +14,7 @@ class AuctionData:
         creator_name: str,
         creator_id: int,
         message_id: Optional[int]=None,
-    ):
+    ) -> None:
         self.id = id
         self.item = item
         self.starting_bid = starting_bid
