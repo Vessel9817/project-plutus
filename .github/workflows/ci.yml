@@ -24,4 +24,4 @@ jobs:
       - name: Install dependencies
         run: pip install --group publish --group typing .
       - name: Run mypy
-        run: ${{ startsWith(matrix.os, 'windows') && 'python' || 'python3' }} -m mypy .
+        run: ${{ startsWith(matrix.os, 'windows') && 'python' || 'python3' }} -m mypy ./src

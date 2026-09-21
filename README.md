@@ -45,7 +45,7 @@ To deploy the Project Plutus Discord bot, follow these steps:
      ```
 
 4. **Running the bot**:
-   - Run the bot with `py bot.py` from the command line.
+   - Run the bot with `py src/main.py` from the command line.
 
 5. **Verify bot status**:
    - After running the bot, it should appear online in your Discord server.
@@ -80,8 +80,8 @@ To deploy the Project Plutus Discord bot, follow these steps:
 
 ## Contributors
 
-- [*Vessel9817*](https://github.com/Vessel9817)
 - [*LazyMelon*](https://github.com/LazyCorpz)
+- [*Vessel9817*](https://github.com/Vessel9817)
 
 ## Notes
 
