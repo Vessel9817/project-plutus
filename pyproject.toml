@@ -18,7 +18,7 @@ classifiers = [
 license-files = ["LICEN[CS]E*", "*.license"]
 
 [dependency-groups]
-publish = ["discord.py >= 2.7.1", "python-dotenv == 1.0.0"]
+publish = ["discord.py >= 2.7.1", "python-dotenv >= 1.2.3"]
 typing = ["mypy >= 2.3.1"]
 
 [project.urls]
