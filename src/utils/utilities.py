@@ -1,11 +1,17 @@
-# utils/utilities.py
-from datetime import datetime, timedelta
+import discord
+from discord.ext import commands
+from datetime import timedelta
 import re
 import math
+from typing import cast
+
+Channel = discord.abc.MessageableChannel \
+    | discord.abc.GuildChannel \
+    | discord.abc.PrivateChannel
 
 
-def format_time_remaining(remaining_seconds: float):
-    # Format the remaining time as HH:MM:SS
+def format_time_remaining(remaining_seconds: float) -> str:
+    """Format the remaining time in natural language, with minute precision"""
     remaining_weeks = int(remaining_seconds // 604800)
     remaining_days = int(remaining_seconds // 86400)
     remaining_hours = int(remaining_seconds // 3600)
@@ -28,7 +34,7 @@ def format_time_remaining(remaining_seconds: float):
     return formatted_time
 
 
-def parse_duration(duration_str: str):
+def parse_duration(duration_str: str) -> timedelta:
     """Parses a duration string like '1d 2h 30m' or '1 minute' into a timedelta object."""
     # Regex to match patterns like '1d', '2h', '30m', '1 minute', '2 hours'
     pattern = re.compile(
@@ -70,3 +76,11 @@ def parse_duration(duration_str: str):
                 kwargs = {time_unit_keywords[unit]: value}
                 duration += timedelta(**kwargs)
     return duration
+
+
+def get_guild(ctx: commands.Context[commands.Bot]) -> discord.guild.Guild:
+    """
+    A wrapper function to assist in typing `ctx.guild`.
+    Assumes the bot doesn't allow commands in DMs.
+    """
+    return cast(discord.guild.Guild, ctx.guild)

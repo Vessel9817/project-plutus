@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  # Runs a Python type-checker
+  mypy:
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
+        os: ['ubuntu-latest', 'windows-latest']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Use Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: pip install --group publish --group typing .
+      - name: Run mypy
+        run: ${{ startsWith(matrix.os, 'windows') && 'python' || 'python3' }} -m mypy ./src
