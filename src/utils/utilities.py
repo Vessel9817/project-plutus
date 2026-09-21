@@ -5,11 +5,9 @@ import re
 import math
 from typing import cast
 
-
 Channel = discord.abc.MessageableChannel \
-    | discord.abc.PrivateChannel \
-    | discord.CategoryChannel \
-    | discord.ForumChannel
+    | discord.abc.GuildChannel \
+    | discord.abc.PrivateChannel
 
 
 def format_time_remaining(remaining_seconds: float) -> str:

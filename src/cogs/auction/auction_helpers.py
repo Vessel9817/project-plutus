@@ -1,3 +1,4 @@
+from abc import ABCMeta, abstractmethod
 import discord
 from discord.ext import commands
 from ...utils.auction_data import AuctionData
@@ -8,6 +9,12 @@ import logging
 import asyncio
 
 logger = logging.getLogger("discord_bot")
+
+
+class MessageableChannel(metaclass=ABCMeta):
+    @abstractmethod
+    def send(self, *args: Any, **kwargs: Any) -> discord.Message:
+        pass
 
 
 class AuctionHelpers:
@@ -21,7 +28,7 @@ class AuctionHelpers:
         self.auction_timers: dict[Any, asyncio.Task[None]] = {}
         self.next_auction_id = 1
 
-    async def _send_message(
+    def _send_message(
         self,
         channel: Channel,
         *args: Any,
@@ -31,8 +38,9 @@ class AuctionHelpers:
         A wrapper function for `channel.send`.
         If the channel doesn't support messaging, this is a no-op.
         '''
-        if isinstance(channel, discord.abc.MessageableChannel):
-            await channel.send(*args, **kwargs)
+        if isinstance(channel, MessageableChannel):
+            return cast(discord.Message, channel.send(*args, **kwargs))
+        return None
 
     def _is_in_guild_context(self, ctx: commands.Context[commands.Bot]) -> bool:
         """Check if the command is invoked in a guild (server) context."""
@@ -81,7 +89,7 @@ class AuctionHelpers:
             discord.Color.red(),
         )
 
-    async def _announce_winner(
+    def _announce_winner(
         self,
         channel_id: int,
         item: str,
@@ -96,7 +104,7 @@ class AuctionHelpers:
                 title=f"Auction Ended: {item}", description=announcement, color=color
             )
             embed.set_footer(text=f"Auction ID: {auction_id}")
-            await self._send_message(channel, embed=embed)
+            self._send_message(channel, embed=embed)
         else:
             logger.error(f"Channel {channel_id} not found for auction announcement.")
 

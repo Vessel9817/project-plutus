@@ -159,7 +159,7 @@ class AuctionCommands(AuctionHelpers, commands.Context[commands.Bot]):
         self._cancel_auction_timer(auction_id)
 
         announcement, color = self._determine_winner(auction)
-        await self._announce_winner(
+        self._announce_winner(
             auction.channel_id, auction.item, announcement, color, auction_id
         )
         auction.active = False
